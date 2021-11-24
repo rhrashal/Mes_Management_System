@@ -32,8 +32,9 @@ router.post('/register', helpers.loginChecker, function (req, res, next) {
     return;
   }
 
-  var sqlQuery = `INSERT INTO users(user_id,user_email,user_pass,user_fname,user_nid) VALUES(NULL, ?, MD5(?), ?,?)`;
-  var values = [req.body.email, req.body.psw, req.body.fname, req.body.nid];
+  var sqlQuery = `INSERT INTO users(user_id,user_email,user_pass,user_fname,user_nid,user_phone,user_phone2,user_dob) 
+                  VALUES(NULL, ?, MD5(?), ?,?,?,?,?)`;
+  var values = [req.body.email, req.body.psw, req.body.fname, req.body.nid, req.body.phone1, req.body.phone2, req.body.dob];
 
   db.query(sqlQuery, values, function (err, results, fields) {
 

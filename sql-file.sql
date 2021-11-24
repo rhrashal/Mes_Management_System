@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 	CONSTRAINT UK_user_email UNIQUE(user_email)
 );
 go
-INSERT INTO users(user_id,user_email,user_pass,user_fname) VALUES(1, 'yusufsezer@mail.com', MD5('123456'), 'Yusuf SEZER');
+INSERT INTO users(user_id,user_email,user_pass,user_fname,user_nid,user_phone,user_phone2,user_dob) 
+VALUES(1, 'yusufsezer@mail.com', MD5('123456'), 'Yusuf SEZER','ddfsdgds','dsgdsgfsd','dsfgdgd','2001-01-01');
 go
 select * from users
 
