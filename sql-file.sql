@@ -24,3 +24,15 @@ VALUES(1, 'yusufsezer@mail.com', MD5('123456'), 'Yusuf SEZER','ddfsdgds','dsgdsg
 go
 select * from users
 
+go
+create table meal(
+meal_id int(11) NOT NULL AUTO_INCREMENT,
+users_id int(11) not null,
+meal_date varchar(50) not null,
+breakfast int(1) not null,
+launch int(1) not null,
+dinner int(1) not null,
+add_by varchar(110) null,
+CONSTRAINT PK_meal_id PRIMARY KEY(meal_id)
+)
+go
