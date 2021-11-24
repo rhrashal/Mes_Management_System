@@ -9,6 +9,7 @@ block content
     ul
       each user in users
         li= user.user_fname
+    a(href="/user-status") User Status
   else
     p Don't have an account yet? 
       a(href='/register') Register

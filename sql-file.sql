@@ -1,7 +1,7 @@
 go
-CREATE DATABASE IF NOT EXISTS user;
+CREATE DATABASE IF NOT EXISTS mes_management_system;
 go
-USE user;
+USE mes_management_system;
 go
 CREATE TABLE IF NOT EXISTS `users` (
 	user_id int(11) NOT NULL AUTO_INCREMENT,
@@ -36,3 +36,8 @@ add_by varchar(110) null,
 CONSTRAINT PK_meal_id PRIMARY KEY(meal_id)
 )
 go
+
+select * from meal m where m.meal_id = 1 and month(m.meal_date) = 10
+
+insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by)
+values (null,2,'2021-11-24',1,1,1,'robiul')

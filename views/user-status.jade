@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  if authorised
+    p Welcome #{fname} | 
+      a(href="/exit") Log Out | 
+      a(href="/") Home
+    if typeof meals != 'undefined'
+    table
+        thead 
+            tr  
+                th Date_Name 
+                th Breakfast 
+                th Lauch 
+                th Dinner
+                th Add by
+        tbody
+            for meal in meals
+                tr                
+                    td=meal.meal_date 
+                    td=meal.breakfast
+                    td=meal.launch
+                    td=meal.dinner
+                    td=meal.add_by
+  else
+    p Don't have an account yet? 
+      a(href='/register') Register
+    p Already have an account? 
+      a(href='/login') Login

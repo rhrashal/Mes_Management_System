@@ -104,7 +104,8 @@ router.post('/login', function (req, res, next) {
 
     if (results.length == 1) {
       req.session.authorised = true;
-      req.session.fname = results[0].user_fname
+      req.session.fname = results[0].user_fname;
+      req.session.user_id = results[0].user_id;
       res.redirect('/');
       return;
     } else {
