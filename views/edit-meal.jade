@@ -2,4 +2,33 @@ extends layout
 
 block content
   if authorised
-    p Edit Page #{fname} | 
+    p Welcome #{fname} | 
+      a(href="/exit") Log Out | 
+      a(href="/") Home
+    if typeof meal != 'undefined'
+      form(method='POST')
+        div.row.justify-content-center
+          label(for='userSelect').col-md-2
+              b=moment(meal.meal_date ).format("DD/MM/YYYY")                               
+          br 
+          br
+          label(for='breakfast').col-md-1
+              b Breakfast
+          div.col-md-2
+            input#breakfast(type='number', name='breakfast', required='required',value=meal.breakfast).form-control
+          label(for='lunch').col-md-1
+              b Lunch
+          div.col-md-2
+            input#lunch(type='number', name='lunch', required='required',value=meal.launch).form-control
+          label(for='dinner').col-md-1
+              b Dinner
+          div.col-md-2
+            input#dinner(type='number', name='dinner', required='required',value=meal.dinner).form-control
+          br 
+          br
+          button(type='submit') Process One Month Meal
+  else
+    p Don't have an account yet? 
+      a(href='/register') Register
+    p Already have an account? 
+      a(href='/login') Login

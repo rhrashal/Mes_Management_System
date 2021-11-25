@@ -159,23 +159,19 @@ router.post('/user-process-clear', function (req, res, next) {
 });
 
 
-router.get('/edit-meal/:meal_Id', function (req, res, next) {
-
-  console.log(req.params.meal_Id);
-  var sqlQuery = `SELECT * FROM users`;
-
-  db.query(sqlQuery, function (err, results, fields) {
-
+router.get('/edit-meal/:meal_Id', function (req, res, next) {  
+  var sqlQuery = `select * from meal where meal_id = ? `;
+  var value = [req.params.meal_Id]
+  db.query(sqlQuery,value, function (err, results, fields) {
+    console.log(results);
     res.render('edit-meal', {
       title: 'Register - Login',
       authorised: req.session.authorised,
       fname: req.session.fname,
       user_id: req.session.user_id,
-      users: results
+      meal: results[0]
     });
-
   });
-
 });
 
 
