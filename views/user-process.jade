@@ -7,32 +7,35 @@ block content
       a(href="/") Home
     if typeof users != 'undefined'
       form(method='POST')
-        label(for='userSelect')
-            b User
-        select(id="userSelect", name="user_id")
-            option(value="0") Select User
-            each user in users                   
-                option(value="#{user.user_id}") #{user.user_fname}    
-        br
-        br    
-        label(for='month')
-            b Select Month
-        input#month(type='month', name='month', required='required')
-        br
-        br 
-        label(for='breakfast')
-            b Breakfast
-        input#breakfast(type='number', name='breakfast', required='required')
-        label(for='lunch')
-            b Lunch
-        input#lunch(type='number', name='lunch', required='required')
-        label(for='dinner')
-            b Dinner
-        input#dinner(type='number', name='dinner', required='required')
-        br
-        br 
-        button(type='submit') Process One One Month Meal
-
+        div.row.justify-content-center
+          label(for='userSelect').col-md-2
+              b User
+          div.col-md-4
+            select(id="userSelect", name="user_id" , required='required').form-control
+                option(value="") --Select User--
+                each user in users                   
+                    option(value="#{user.user_id}") #{user.user_fname}       
+          label(for='month').col-md-2
+              b Select Month
+          div.col-md-4
+            input#month(type='month', name='month', required='required').form-control
+          br 
+          br
+          label(for='breakfast').col-md-2
+              b Breakfast
+          div.col-md-2
+            input#breakfast(type='number', name='breakfast', required='required').form-control
+          label(for='lunch').col-md-2
+              b Lunch
+          div.col-md-2
+            input#lunch(type='number', name='lunch', required='required').form-control
+          label(for='dinner').col-md-2
+              b Dinner
+          div.col-md-2
+            input#dinner(type='number', name='dinner', required='required').form-control
+          br 
+          br
+          button(type='submit') Process One Month Meal
   else
     p Don't have an account yet? 
       a(href='/register') Register

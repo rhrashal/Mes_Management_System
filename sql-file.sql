@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 );
 go
 INSERT INTO users(user_id,user_email,user_pass,user_fname,user_nid,user_phone,user_phone2,user_dob) 
-VALUES(1, 'yusufsezer@mail.com', MD5('123456'), 'Yusuf SEZER','ddfsdgds','dsgdsgfsd','dsfgdgd','2001-01-01');
+VALUES(1, 'admin@mail.com', MD5('123456'), 'Admin','','','','');
 go
 select * from users
 

@@ -78,6 +78,7 @@ router.get('/user-process', function (req, res, next) {
 });
 router.post('/user-process', function (req, res, next) {
   console.warn(req.body)
+  next();
 });
 
 module.exports = router;
