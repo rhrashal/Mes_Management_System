@@ -13,7 +13,7 @@ block content
                 th Breakfast 
                 th Lauch 
                 th Dinner
-                th Add by
+                th Action
         tbody
             for meal in meals
                 tr                
@@ -21,7 +21,11 @@ block content
                     td=meal.breakfast
                     td=meal.launch
                     td=meal.dinner
-                    td=meal.add_by
+                    td
+                      if meal.meal_date>new Date()
+                        a(href="/edit-meal/"+meal.meal_id) Edit
+                      else 
+                        p Not Edit able
   else
     p Don't have an account yet? 
       a(href='/register') Register

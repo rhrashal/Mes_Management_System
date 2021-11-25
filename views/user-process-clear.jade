@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  if authorised
+    p Welcome #{fname} | 
+      a(href="/exit") Log Out | 
+      a(href="/") Home
+    if typeof users != 'undefined'
+      form(method='POST')
+        div.row.justify-content-center
+          label(for='userSelect').col-md-2
+              b User
+          div.col-md-4
+            select(id="userSelect", name="user_id" , required='required').form-control
+                option(value="") --Select User--
+                each user in users                   
+                    option(value="#{user.user_id}") #{user.user_fname}       
+          label(for='month').col-md-2
+              b Select Month
+          div.col-md-4
+            input#month(type='month', name='month', required='required').form-control
+          br 
+          br
+          button(type='submit') Process One Month Meal
+  else
+    p Don't have an account yet? 
+      a(href='/register') Register
+    p Already have an account? 
+      a(href='/login') Login
