@@ -28,11 +28,16 @@ go
 create table meal(
 meal_id int(11) NOT NULL AUTO_INCREMENT,
 users_id int(11) not null,
-meal_date varchar(50) not null,
+meal_date date not null,
 breakfast int(1) not null,
 launch int(1) not null,
 dinner int(1) not null,
 add_by varchar(110) null,
+add_date dateTime null,
+update_by varchar(110) null,
+update_date dateTime null,
+status varchar(10) null,
+isdelete bool null,
 CONSTRAINT PK_meal_id PRIMARY KEY(meal_id)
 )
 go

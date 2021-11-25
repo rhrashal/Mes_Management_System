@@ -77,8 +77,41 @@ router.get('/user-process', function (req, res, next) {
 
 });
 router.post('/user-process', function (req, res, next) {
-  console.warn(req.body)
-  next();
+  var month = req.body.month.split("-");
+  var dat = getDaysInMonthUTC(month[1]-1,month[0])
+  //console.warn(dat);
+  dat.forEach(function (item, index) {
+    console.log(item, index);
+  });
+
+
+  res.render('user-process', {
+    title: 'User Meal Process',
+    authorised: req.session.authorised,
+    fname: req.session.fname,
+    user_id: req.session.user_id
+  }); 
 });
 
 module.exports = router;
+
+
+// function  getDaysInMonth(month, year) {
+//   var date = new Date(year, month, 1);
+//   var days = [];
+//   while (date.getMonth() == month) {
+//     days.push(new Date(date));
+//     date.setDate(date.getDate() + 1);
+//   }
+//   return days;
+// }
+
+function getDaysInMonthUTC(month, year) {
+  var date = new Date(Date.UTC(year, month, 1));
+  var days = [];
+  while (date.getUTCMonth() === month) {
+    days.push(new Date(date));
+    date.setUTCDate(date.getUTCDate() + 1);
+  }
+  return days;
+}
