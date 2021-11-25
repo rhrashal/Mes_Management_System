@@ -17,7 +17,7 @@ block content
         tbody
             for meal in meals
                 tr                
-                    td=meal.meal_date 
+                    td=moment(meal.meal_date ).format("DD/MM/YYYY")
                     td=meal.breakfast
                     td=meal.launch
                     td=meal.dinner

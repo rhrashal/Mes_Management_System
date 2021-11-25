@@ -79,12 +79,29 @@ router.get('/user-process', function (req, res, next) {
 router.post('/user-process', function (req, res, next) {
   var month = req.body.month.split("-");
   var dat = getDaysInMonthUTC(month[1]-1,month[0])
+  var cc = 0;
   //console.warn(dat);
   dat.forEach(function (item, index) {
-    console.log(item, index);
+    var sqlQuery = `select count(meal_id) dt from meal m where m.users_id = ? and meal_date = cast(? as date)`;
+    var values = [req.session.user_id,item];
+    db.query(sqlQuery,values,function (err, results, fields) {  
+      //console.warn(results[0].dt,index);        
+      if(results[0].dt==0){
+        var sqlQueryinsert = `insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by,add_date,isdelete) 
+                              values (null,?,?,?,?,?,?,?,0)  `;
+        var values = [req.session.user_id,item,req.body.breakfast,req.body.lunch,req.body.dinner,req.session.fname,new Date()];
+        db.query(sqlQueryinsert,values,function (err, results1, fields) {  
+          //console.warn(results1);        
+          if(results1.insertId>0){
+            cc = cc+1
+          }
+        });
+      }
+    });
+    //console.log(item, index);
   });
-
-
+  alert(cc.toString() +" rows inserted")
+  
   res.render('user-process', {
     title: 'User Meal Process',
     authorised: req.session.authorised,
@@ -96,15 +113,6 @@ router.post('/user-process', function (req, res, next) {
 module.exports = router;
 
 
-// function  getDaysInMonth(month, year) {
-//   var date = new Date(year, month, 1);
-//   var days = [];
-//   while (date.getMonth() == month) {
-//     days.push(new Date(date));
-//     date.setDate(date.getDate() + 1);
-//   }
-//   return days;
-// }
 
 function getDaysInMonthUTC(month, year) {
   var date = new Date(Date.UTC(year, month, 1));

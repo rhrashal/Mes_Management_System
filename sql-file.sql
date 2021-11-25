@@ -46,3 +46,6 @@ select * from meal m where m.meal_id = 1 and month(m.meal_date) = 10
 
 insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by)
 values (null,2,'2021-11-24',1,1,1,'robiul')
+
+
+delete from meal where users_id = 2 and month(meal_date) = 11 and year(meal_date) = 2021
