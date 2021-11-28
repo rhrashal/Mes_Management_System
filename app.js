@@ -6,6 +6,7 @@ var session = require('express-session');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+var controllerRouter = require('./routes/controller');
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -28,6 +29,7 @@ app.use(session({
 }));
 
 app.use('/', indexRouter);
+app.use('/', controllerRouter);
 app.use('/', usersRouter);
 app.locals.moment = require('moment');
 // catch 404 and forward to error handler

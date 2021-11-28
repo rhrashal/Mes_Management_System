@@ -9,7 +9,8 @@ block content
       form(method='POST')
         div.row.justify-content-center
           label(for='userSelect').col-md-2
-              b=moment(meal.meal_date ).format("DD/MM/YYYY")                               
+              b=moment(meal.meal_date ).format("DD/MM/YYYY")   
+          input#meal_id(type='hidden', name='meal_id',value=meal.meal_id)                         
           br 
           br
           label(for='breakfast').col-md-1
