@@ -4,15 +4,17 @@ var db = require('../db');
 var helpers = require('../helpers');
 var errors = [];
 
-router.get('/register', helpers.loginChecker, function (req, res, next) {
+//router.get('/register', helpers.loginChecker, function (req, res, next) {
+router.get('/register', function (req, res, next) {
 
   res.render('register', {
-    title: 'Register'
+    title: 'Register User - '
   });
 
 });
 
-router.post('/register', helpers.loginChecker, function (req, res, next) {
+//router.post('/register', helpers.loginChecker, function (req, res, next) {
+router.post('/register', function (req, res, next) {
 
   if (!helpers.checkForm([req.body.email, req.body.psw, req.body.pswrepeat, req.body.fname])) {
     errors.push('Please fill in all fields!');
@@ -61,7 +63,7 @@ router.post('/register', function (req, res, next) {
   res.statusCode = 401;
 
   res.render('register', {
-    title: 'Register',
+    title: 'Register User - ',
     messages: errors
   });
 
@@ -72,7 +74,7 @@ router.post('/register', function (req, res, next) {
 router.get('/login', helpers.loginChecker, function (req, res, next) {
 
   res.render('login', {
-    title: 'Login'
+    title: 'Login - User - '
   });
 
 });
@@ -122,7 +124,7 @@ router.post('/login', function (req, res, next) {
   res.statusCode = 401;
 
   res.render('login', {
-    title: 'Login',
+    title: 'Login - User - ',
     messages: errors
   });
 

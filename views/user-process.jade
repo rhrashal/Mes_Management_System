@@ -2,9 +2,8 @@ extends layout
 
 block content
   if authorised
-    p Welcome #{fname} | 
-      a(href="/exit") Log Out | 
-      a(href="/") Home
+     h2 
+      span.btn.btn-success #{fname} 
     if typeof users != 'undefined'
       form(method='POST')
         div.row.justify-content-center
@@ -37,7 +36,7 @@ block content
           br
           button(type='submit') Process One Month Meal
   else
-    p Don't have an account yet? 
-      a(href='/register') Register
-    p Already have an account? 
-      a(href='/login') Login
+    //- p Don't have an account yet? 
+    //-   a(href='/register') Register
+    //- p Already have an account? 
+    //-   a(href='/login') Login

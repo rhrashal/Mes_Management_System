@@ -8,7 +8,10 @@ html
     script( src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' )
   body
     main
-      h1= title
+      h1= title 
+        a(href="/").btn.btn-outline-primary Home
+        if authorised          
+          a(href="/exit").btn.btn-outline-danger Log Out
       if typeof messages != 'undefined'
         each msg in messages
           p= msg

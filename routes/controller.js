@@ -43,7 +43,7 @@ router.post('/user-process', function (req, res, next) {
       if (results[0].dt == 0) {
         var sqlQueryinsert = `insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by,add_date,isdelete) 
                               values (null,?,?,?,?,?,?,?,0)  `;
-        var values = [req.session.user_id, item, req.body.breakfast, req.body.lunch, req.body.dinner, req.session.fname, new Date()];
+        var values = [req.body.user_id, item, req.body.breakfast, req.body.lunch, req.body.dinner, req.session.fname, new Date()];
         db.query(sqlQueryinsert, values, function (err, results1, fields) {
           //console.warn(results1);        
           if (results1.insertId > 0) {

@@ -9,7 +9,7 @@ router.get('/', function (req, res, next) {
   db.query(sqlQuery, function (err, results, fields) {
 
     res.render('index', {
-      title: 'Register - Login',
+      title: "Mes Management System- ",
       authorised: req.session.authorised,
       fname: req.session.fname,
       user_id: req.session.user_id,
@@ -30,7 +30,7 @@ router.get('/user-status', function (req, res, next) {
     db.query(sqlQuery, values, function (err, results, fields) {
       //console.warn(results);
       res.render('user-status', {
-        title: 'User Meal Status',
+        title: 'User Meal Status - ',
         authorised: req.session.authorised,
         fname: req.session.fname,
         user_id: req.session.user_id,
@@ -55,7 +55,7 @@ router.get('/edit-meal/:meal_Id', function (req, res, next) {
   db.query(sqlQuery,value, function (err, results, fields) {
     console.log(results);
     res.render('edit-meal', {
-      title: 'Register - Login',
+      title: 'Meal Edit - ',
       authorised: req.session.authorised,
       fname: req.session.fname,
       user_id: req.session.user_id,

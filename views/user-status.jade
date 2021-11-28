@@ -2,11 +2,10 @@ extends layout
 
 block content
   if authorised
-    p Welcome #{fname} | 
-      a(href="/exit") Log Out | 
-      a(href="/") Home
+     h2 
+      span.btn.btn-success #{fname} 
     if typeof meals != 'undefined'
-    table.table.table-success.table-striped
+    table.table.table-hover.table-dark
         thead
             tr  
                 th Date_Name 
@@ -23,11 +22,11 @@ block content
                     td=meal.dinner
                     td
                       if meal.meal_date>new Date()
-                        a(href="/edit-meal/"+meal.meal_id) Edit
+                        a(href="/edit-meal/"+meal.meal_id).btn.btn-outline-warning.btn-sm Edit
                       else 
-                        p Not Edit able
+                        span.badge.badge-pill.badge-warning Not Editable
   else
-    p Don't have an account yet? 
-      a(href='/register') Register
-    p Already have an account? 
-      a(href='/login') Login
+    //- p Don't have an account yet? 
+    //-   a(href='/register') Register
+    //- p Already have an account? 
+    //-   a(href='/login') Login
