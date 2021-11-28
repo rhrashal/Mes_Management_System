@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db');
-
+var errors = [];
 
 router.get('/user-process', function (req, res, next) {
 
@@ -45,23 +45,26 @@ router.post('/user-process', function (req, res, next) {
                               values (null,?,?,?,?,?,?,?,0)  `;
         var values = [req.body.user_id, item, req.body.breakfast, req.body.lunch, req.body.dinner, req.session.fname, new Date()];
         db.query(sqlQueryinsert, values, function (err, results1, fields) {
-          //console.warn(results1);        
-          if (results1.insertId > 0) {
+          //console.warn(results1.affectedRows);        
+          if (results1.affectedRows > 0) {
             cc = cc + 1
           }
         });
       }
     });
-    //console.log(item, index);
-  });
-  console.log(cc.toString() + " rows inserted")
 
-  res.render('user-process', {
-    title: 'User Meal Process',
-    authorised: req.session.authorised,
-    fname: req.session.fname,
-    user_id: req.session.user_id
   });
+  console.log(cc);
+  res.redirect('/user-process');
+  return;
+  //console.log(cc.toString() + " rows inserted")
+  // if (cc > 0) {
+  //   res.redirect('/user-process');
+  //   return;
+  // } else {
+  //   errors.push(err.message);
+  //   next();
+  // }  
 });
 
 router.get('/user-process-clear', function (req, res, next) {
@@ -96,20 +99,19 @@ router.post('/user-process-clear', function (req, res, next) {
   var sqlQueryDelete = `delete from meal where users_id = ? and month(meal_date) = ? and year(meal_date) = ? and cast(meal_date as date)>cast(CURDATE() as date) `;
   var values = [req.session.user_id, month[1], month[0]];
   db.query(sqlQueryDelete, values, function (err, results, fields) {
-    console.warn(results);        
-    // if (results.insertId > 0) {
-    //   cc = cc + 1
-    // }
+    console.warn(results); 
+       
   });
+  res.redirect('/user-process-clear');
+  return;
+  // if (results.affectedRows == 1) {
+  //   res.redirect('/user-process-clear');
+  //   return;
+  // } else {
+  //   errors.push(err.message);
+  //   next();
+  // }    
   //console.log(cc.toString() + " rows inserted")
-
-  res.render('user-process-clear', {
-    title: 'User Meal Process',
-    authorised: req.session.authorised,
-    fname: req.session.fname,
-    user_id: req.session.user_id
-
-  });
 });
 
 

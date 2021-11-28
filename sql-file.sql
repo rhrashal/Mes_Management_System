@@ -49,3 +49,14 @@ values (null,2,'2021-11-24',1,1,1,'robiul')
 
 
 delete from meal where users_id = 2 and month(meal_date) = 11 and year(meal_date) = 2021
+
+
+declare  userID BIGINT(11) = 4;
+declare monthId BIGINT(11) = 11;
+
+select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner
+,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  4 and month(m1.meal_date) =  11) as totalBreakfast
+,(select sum(m2.launch) from meal m2 where m2.users_id =  4 and month(m2.meal_date) =  11) as totalLaunch
+,(select sum(m3.dinner) from meal m3 where m3.users_id =  4 and month(m3.meal_date) =  11)  as totalDinner 
+,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  4 and month(m4.meal_date) =  11)  as totalMeal 
+from meal m where m.users_id =  4 and month(m.meal_date) =  11

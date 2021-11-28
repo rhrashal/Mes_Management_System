@@ -68,14 +68,14 @@ router.post('/edit-meal/:meal_Id', function (req, res, next) {
   var sqlQuery = ` update meal set breakfast = ? , launch = ? , dinner = ?, update_by = ?, update_date  = ?  where  meal_id = ?  `;
   var value = [req.body.breakfast,req.body.lunch,req.body.dinner,req.session.fname, new Date(),req.body.meal_id]
   db.query(sqlQuery,value, function (err, results, fields) {
-    console.log(results);
-    res.render('edit-meal', {
-      title: 'user status',
-      authorised: req.session.authorised,
-      fname: req.session.fname,
-      user_id: req.session.user_id,
-      meal: results[0]
-    });
+    //console.log(results);
+    if (results.affectedRows == 1) {
+      res.redirect('/user-status');
+      return;
+    } else {
+      errors.push(err.message);
+      next();
+    }    
   });
 });
 
