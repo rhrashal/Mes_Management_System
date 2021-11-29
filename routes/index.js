@@ -22,20 +22,32 @@ router.get('/', function (req, res, next) {
 
 router.get('/user-status', function (req, res, next) {
 
-
   if (req.session.authorised) {
-    var sqlQuery = `select * from meal m where m.users_id = ? and month(m.meal_date) = ?`;
+    
+    var sqlQuery = ` set @userID := ?, @monthId := ? ;  `;
     const d = new Date();
     var values = [req.session.user_id, d.getMonth() + 1];
     db.query(sqlQuery, values, function (err, results, fields) {
-      //console.warn(results);
-      res.render('user-status', {
-        title: 'User Meal Status - ',
-        authorised: req.session.authorised,
-        fname: req.session.fname,
-        user_id: req.session.user_id,
-        meals: results
-      });
+      //console.warn(results.serverStatus);
+      if(results.serverStatus==2){
+        var sqlQuery1 = ` select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner
+                        ,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  @userID and month(m1.meal_date) =  @monthId and meal_date <= CURDATE() ) as totalBreakfast
+                        ,(select sum(m2.launch) from meal m2 where m2.users_id =  @userID and month(m2.meal_date) =  @monthId and meal_date <= CURDATE()) as totalLaunch
+                        ,(select sum(m3.dinner) from meal m3 where m3.users_id =  @userID and month(m3.meal_date) =  @monthId and meal_date <= CURDATE())  as totalDinner 
+                        ,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId and meal_date <= CURDATE())  as totalMeal 
+                        from meal m where m.users_id =  @userID and month(m.meal_date) =  @monthId  `;
+        db.query(sqlQuery1, function (err, results1, fields) {
+          console.warn(results1);
+          res.render('user-status', {
+            title: 'User Meal Status - ',
+            authorised: req.session.authorised,
+            fname: req.session.fname,
+            user_id: req.session.user_id,
+            meals: results1
+          });
+        });
+      }
+      
     });
   } else {
     res.render('index', {

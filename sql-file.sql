@@ -51,13 +51,11 @@ values (null,2,'2021-11-24',1,1,1,'robiul')
 delete from meal where users_id = 2 and month(meal_date) = 11 and year(meal_date) = 2021
 
 
-BEGIN
-    DECLARE userID number(10) = 4; 
-    DECLARE monthId number(10) = 11;     
+set @userID := 2, @monthId := 11; 
     select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner
-	,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  userID and month(m1.meal_date) =  monthId) as totalBreakfast
-	,(select sum(m2.launch) from meal m2 where m2.users_id =  userID and month(m2.meal_date) =  monthId) as totalLaunch
-	,(select sum(m3.dinner) from meal m3 where m3.users_id =  userID and month(m3.meal_date) =  monthId)  as totalDinner 
-	,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  userID and month(m4.meal_date) =  monthId)  as totalMeal 
-	from meal m where m.users_id =  userID and month(m.meal_date) =  monthId
-END
+	,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  @userID and month(m1.meal_date) =  @monthId) as totalBreakfast
+	,(select sum(m2.launch) from meal m2 where m2.users_id =  @userID and month(m2.meal_date) =  @monthId) as totalLaunch
+	,(select sum(m3.dinner) from meal m3 where m3.users_id =  @userID and month(m3.meal_date) =  @monthId)  as totalDinner 
+	,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId)  as totalMeal 
+	from meal m where m.users_id =  @userID and month(m.meal_date) =  @monthId
+	
