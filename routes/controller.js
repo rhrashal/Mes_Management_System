@@ -54,7 +54,7 @@ router.post('/user-process', function (req, res, next) {
     });
 
   });
-  console.log(cc);
+  //console.log(cc);
   res.redirect('/user-process');
   return;
   //console.log(cc.toString() + " rows inserted")
@@ -99,7 +99,7 @@ router.post('/user-process-clear', function (req, res, next) {
   var sqlQueryDelete = `delete from meal where users_id = ? and month(meal_date) = ? and year(meal_date) = ? and cast(meal_date as date)>cast(CURDATE() as date) `;
   var values = [req.session.user_id, month[1], month[0]];
   db.query(sqlQueryDelete, values, function (err, results, fields) {
-    console.warn(results); 
+    //console.warn(results); 
        
   });
   res.redirect('/user-process-clear');

@@ -37,7 +37,7 @@ router.get('/user-status', function (req, res, next) {
                         ,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId and meal_date <= CURDATE())  as totalMeal 
                         from meal m where m.users_id =  @userID and month(m.meal_date) =  @monthId  `;
         db.query(sqlQuery1, function (err, results1, fields) {
-          console.warn(results1);
+          //console.warn(results1);
           res.render('user-status', {
             title: 'User Meal Status - ',
             authorised: req.session.authorised,
@@ -65,7 +65,7 @@ router.get('/edit-meal/:meal_Id', function (req, res, next) {
   var sqlQuery = `select * from meal where meal_id = ? `;
   var value = [req.params.meal_Id]
   db.query(sqlQuery,value, function (err, results, fields) {
-    console.log(results);
+    //console.log(results);
     res.render('edit-meal', {
       title: 'Meal Edit - ',
       authorised: req.session.authorised,
