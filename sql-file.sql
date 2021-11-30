@@ -59,3 +59,13 @@ set @userID := 2, @monthId := 11;
 	,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId)  as totalMeal 
 	from meal m where m.users_id =  @userID and month(m.meal_date) =  @monthId
 	
+
+
+set @DateFilter := '2021-11-25'; 
+    select  u.user_id ,u.user_fname,m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner
+	,(select sum(m1.breakfast) from meal m1 where m1.meal_date =  @DateFilter ) as totalBreakfast
+	,(select sum(m2.launch) from meal m2 where m2.meal_date =  @DateFilter ) as totalLaunch
+	,(select sum(m3.dinner) from meal m3 where m3.meal_date =  @DateFilter )  as totalDinner 
+	,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.meal_date =  @DateFilter )  as totalMeal 
+	from meal m inner join users u on u.user_id  = m.users_id 
+	where m.meal_date =  @DateFilter

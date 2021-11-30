@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  if authorised
+     h2 
+      span.btn.btn-success #{fname} 
+    if meals.length>0
+      div.row
+        button(type="button").btn.btn-info.col-3 Total Breakfast:
+          b= meals[0].totalBreakfast
+        button(type="button").btn.btn-warning.col-3 Total Lauch:
+          b= meals[0].totalLaunch
+        button(type="button").btn.btn-info.col-3 Total Dinner:
+          b= meals[0].totalDinner
+        button(type="button").btn.btn-warning.col-3 Total Meal:
+          b= meals[0].totalMeal
+
+    if typeof meals != 'undefined'
+    table.table.table-hover.table-dark
+        thead
+            tr  
+                th Date_Name 
+                th Breakfast 
+                th Lauch 
+                th Dinner
+                th Action
+        tbody
+            for meal in meals
+                tr                
+                    td=moment(meal.meal_date ).format("DD/MM/YYYY")
+                    td=meal.breakfast
+                    td=meal.launch
+                    td=meal.dinner
+                    td
+                      if meal.meal_date>new Date()
+                        a(href="/edit-meal/"+meal.meal_id).btn.btn-outline-warning.btn-sm Edit
+                      else 
+                        span.badge.badge-pill.badge-warning Not Editable
+  else
+    //- p Don't have an account yet? 
+    //-   a(href='/register') Register
+    //- p Already have an account? 
+    //-   a(href='/login') Login
