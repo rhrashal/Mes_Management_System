@@ -140,4 +140,89 @@ router.get('/exit', function (req, res, next) {
 
 });
 
+router.get('/change-password', function (req, res, next) {
+  if (req.session.authorised) {
+    res.render('change-password', {
+      title: req.session.fname+"'s Password Change ",
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id,
+    });
+  }
+});
+router.post('/change-password', function (req, res, next) {
+
+  var sqlQuery = `SELECT * FROM users where user_id = ? and user_pass  =  MD5( ? );`;
+  var values = [req.body.user_id, req.body.currPass];
+
+  db.query(sqlQuery, values, function (err, results, fields) {
+    console.log(results);
+    if (results.length == 1) {
+      res.render('change-password', {
+        title: req.session.fname+"'s Password Change ",
+        authorised: req.session.authorised,
+        fname: req.session.fname,
+        user_id: req.session.user_id,
+        user:results
+      });
+      return;
+    } else {
+      errors.push('The or password is incorrect.');
+      next();
+    }
+  });
+
+});
+router.post('/change-password', function (req, res, next) {
+
+  res.statusCode = 401;
+
+  res.render('change-password', {
+    title: ' Change Password ',
+    messages: errors
+  });
+
+  errors = [];
+
+});
+
+
+router.post('/confirm-password', function (req, res, next) {
+
+  if (req.body.newPass !== req.body.confPass) {
+    errors.push('Passwords are not equal!');
+    next();
+    return;
+  }
+  console.log(req.body)
+  var sqlQuery = ` update  users set user_pass = MD5( ? ) where user_id = ? `;
+  var values = [req.body.confPass, req.body.nuser_id];
+  db.query(sqlQuery, values, function (err, results, fields) {
+    if (err) {
+      errors.push(err.message);
+      next();
+      return;
+    }
+    if (results.affectedRows == 1) {
+      res.redirect('/');
+      return;
+    } else {
+      errors.push(err.message);
+      next();
+    }
+  });
+});
+router.post('/confirm-password', function (req, res, next) {
+
+  res.statusCode = 401;
+
+  res.render('change-password', {
+    title: 'change-password ',
+    messages: errors
+  });
+
+  errors = [];
+
+});
+
 module.exports = router;

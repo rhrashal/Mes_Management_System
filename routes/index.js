@@ -24,18 +24,18 @@ router.get('/user-status', function (req, res, next) {
 
   if (req.session.authorised) {
     
-    var sqlQuery = ` set @userID := ?, @monthId := ? ;  `;
+    var sqlQuery = ` set @userID := ?, @monthId := ? , @yearId := ? ;  `;
     const d = new Date();
-    var values = [req.session.user_id, d.getMonth() + 1];
+    var values = [req.session.user_id, d.getMonth() + 1, d.getFullYear()];
     db.query(sqlQuery, values, function (err, results, fields) {
       //console.warn(results.serverStatus);
       if(results.serverStatus==2){
         var sqlQuery1 = ` select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner
-                        ,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  @userID and month(m1.meal_date) =  @monthId and meal_date <= CURDATE() ) as totalBreakfast
-                        ,(select sum(m2.launch) from meal m2 where m2.users_id =  @userID and month(m2.meal_date) =  @monthId and meal_date <= CURDATE()) as totalLaunch
-                        ,(select sum(m3.dinner) from meal m3 where m3.users_id =  @userID and month(m3.meal_date) =  @monthId and meal_date <= CURDATE())  as totalDinner 
-                        ,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId and meal_date <= CURDATE())  as totalMeal 
-                        from meal m where m.users_id =  @userID and month(m.meal_date) =  @monthId  `;
+                        ,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  @userID and month(m1.meal_date) =  @monthId and year(m1.meal_date) =  @yearId   and meal_date <= CURDATE() ) as totalBreakfast
+                        ,(select sum(m2.launch) from meal m2 where m2.users_id =  @userID and month(m2.meal_date) =  @monthId and year(m2.meal_date) =  @yearId   and meal_date <= CURDATE()) as totalLaunch
+                        ,(select sum(m3.dinner) from meal m3 where m3.users_id =  @userID and month(m3.meal_date) =  @monthId and year(m3.meal_date) =  @yearId   and meal_date <= CURDATE())  as totalDinner 
+                        ,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId and year(m4.meal_date) =  @yearId   and meal_date <= CURDATE())  as totalMeal 
+                        from meal m where m.users_id =  @userID and month(m.meal_date) =  @monthId and year(m.meal_date) =  @yearId  `;
         db.query(sqlQuery1, function (err, results1, fields) {
           //console.warn(results1);
           res.render('user-status', {
@@ -91,15 +91,16 @@ router.post('/edit-meal/:meal_Id', function (req, res, next) {
   });
 });
 
-router.post('/meal-status', function (req, res, next) {
+router.post('/daly-status', function (req, res, next) {
   //console.log(req.body.dateInfo)
   if (req.session.authorised) {    
     var sqlQuery = ` set @DateFilter := ? ;   `;
     var values = [];
+    var d = new Date();
     if(req.body.dateInfo == ""){
-      values = [new Date().toISOString().split('T')[0]];
+      values = [d.getFullYear()+"-"+(d.getMonth()+1).toString()+"-"+d.getDate()];
     }else{
-      values = req.body.dateInfo;
+      values = [req.body.dateInfo];
     }
     //console.log(values)    
     db.query(sqlQuery, values, function (err, results, fields) {
@@ -114,7 +115,7 @@ router.post('/meal-status', function (req, res, next) {
                         where m.meal_date =  @DateFilter  `;
         db.query(sqlQuery1, function (err, results1, fields) {
           //console.warn(results1);
-          res.render('meal-status', {
+          res.render('daly-status', {
             title: 'User Meal Status - ',
             authorised: req.session.authorised,
             fname: req.session.fname,
@@ -138,46 +139,53 @@ router.post('/meal-status', function (req, res, next) {
 });
 
 
-// router.post('/daly-Status', function (req, res, next) {
+router.post('/monthly-Status', function (req, res, next) {
 
-//   console.log(req.body.dateInfo)
+  console.log(req.body)
 
-//   if (req.session.authorised) {
+  if (req.session.authorised) {
     
-//     var sqlQuery = ` set @DateFilter := ? ;   `;
-//     const d = new Date();
-//     var values = [req.session.user_id, d.getMonth() + 1];
-//     db.query(sqlQuery, values, function (err, results, fields) {
-//       //console.warn(results.serverStatus);
-//       if(results.serverStatus==2){
-//         var sqlQuery1 = ` select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner
-//                         ,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  @userID and month(m1.meal_date) =  @monthId and meal_date <= CURDATE() ) as totalBreakfast
-//                         ,(select sum(m2.launch) from meal m2 where m2.users_id =  @userID and month(m2.meal_date) =  @monthId and meal_date <= CURDATE()) as totalLaunch
-//                         ,(select sum(m3.dinner) from meal m3 where m3.users_id =  @userID and month(m3.meal_date) =  @monthId and meal_date <= CURDATE())  as totalDinner 
-//                         ,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId and meal_date <= CURDATE())  as totalMeal 
-//                         from meal m where m.users_id =  @userID and month(m.meal_date) =  @monthId  `;
-//         db.query(sqlQuery1, function (err, results1, fields) {
-//           //console.warn(results1);
-//           res.render('user-status', {
-//             title: 'User Meal Status - ',
-//             authorised: req.session.authorised,
-//             fname: req.session.fname,
-//             user_id: req.session.user_id,
-//             meals: results1
-//           });
-//         });
-//       }
+    var sqlQuery = ` set @userID := ?, @monthId := ? , @yearId := ? ;   `;
+    const d = new Date();
+    var values = [];
+    if(req.body.monthInfo == ""){
+      values = [req.body.user_id, d.getMonth() + 1, d.getFullYear()];
+    }else{
+      var month = req.body.monthInfo.split("-");
+      values = [req.body.user_id, month[1], month[0]];
+    }
+    db.query(sqlQuery, values, function (err, results, fields) {
+      //console.warn(results.serverStatus);
+      if(results.serverStatus==2){
+        var sqlQuery1 = ` select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner,u.user_fname
+                        ,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  @userID and month(m1.meal_date) =  @monthId and year(m1.meal_date) =  @yearId   and meal_date <= CURDATE() ) as totalBreakfast
+                        ,(select sum(m2.launch) from meal m2 where m2.users_id =  @userID and month(m2.meal_date) =  @monthId and year(m2.meal_date) =  @yearId   and meal_date <= CURDATE()) as totalLaunch
+                        ,(select sum(m3.dinner) from meal m3 where m3.users_id =  @userID and month(m3.meal_date) =  @monthId and year(m3.meal_date) =  @yearId   and meal_date <= CURDATE())  as totalDinner 
+                        ,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  @userID and month(m4.meal_date) =  @monthId and year(m4.meal_date) =  @yearId   and meal_date <= CURDATE())  as totalMeal 
+                        from meal m inner join users u on u.user_id  = m.users_id
+                        where m.users_id =  @userID and month(m.meal_date) =  @monthId and year(m.meal_date) =  @yearId   `;
+        db.query(sqlQuery1, function (err, results1, fields) {
+          //console.warn(results1);
+          res.render('monthly-status', {
+            title: 'User Meal Status - ',
+            authorised: req.session.authorised,
+            fname: req.session.fname,
+            user_id: req.session.user_id,
+            meals: results1
+          });
+        });
+      }
       
-//     });
-//   } else {
-//     res.render('index', {
-//       title: 'Unauthorized',
-//       authorised: req.session.authorised,
-//       fname: req.session.fname,
-//       user_id: req.session.user_id
-//     });
-//   }
-// });
+    });
+  } else {
+    res.render('index', {
+      title: 'Unauthorized',
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id
+    });
+  }
+});
 
 module.exports = router;
 

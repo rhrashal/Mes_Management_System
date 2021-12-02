@@ -8,10 +8,23 @@ block content
       a(href="/user-process-clear").btn.btn-outline-primary User Process Clear
       a(href='/register').btn.btn-outline-warning Register
     
-      form(method="POST" action="meal-status")
-        input#dateInfo(type='date', name='dateInfo')
-        button(type="submit").btn.btn-outline-primary Daly Status
-
+      form(method="POST" action="daly-status")
+        div.row.mt-3            
+          div.col-md-6 
+            input#dateInfo(type='date', name='dateInfo').form-control  
+          div.col-md-6 
+            button(type="submit").btn.btn-outline-primary Daly Status
+      form(method="POST" action="monthly-status")
+        div.row.mt-3                    
+          div.col-md-4 
+            select(id="userSelect", name="user_id" , required='required').form-control
+                option(value="") --Select User--
+                each user in users                   
+                    option(value="#{user.user_id}") #{user.user_fname}      
+          div.col-md-4 
+            input#monthInfo(type='month', name='monthInfo').form-control                 
+          div.col-md-4 
+            button(type="submit").btn.btn-outline-primary Monthly Status     
     if typeof users != 'undefined'
     p User list
     ul.list-group
@@ -20,10 +33,24 @@ block content
   else if authorised
     h2 
       span.btn.btn-success #{fname} 
-      a(href="/user-status",).btn.btn-outline-primary User Status
-      form(method="POST" action="meal-status")
-        input#dateInfo(type='date', name='dateInfo')
-        button(type="submit").btn.btn-outline-primary Daly Status
+      a(href="/user-status",).btn.btn-outline-primary User Status      
+      form(method="POST" action="daly-status")
+        div.row.mt-3                    
+          div.col-md-6 
+            input#dateInfo(type='date', name='dateInfo').form-control                  
+          div.col-md-6 
+            button(type="submit").btn.btn-outline-primary Daly Status    
+      form(method="POST" action="monthly-status")
+        div.row.mt-3                    
+          div.col-md-4 
+            select(id="userSelect", name="user_id" , required='required').form-control
+                option(value="") --Select User--
+                each user in users                   
+                    option(value="#{user.user_id}") #{user.user_fname}      
+          div.col-md-4 
+            input#monthInfo(type='month', name='monthInfo').form-control                 
+          div.col-md-4 
+            button(type="submit").btn.btn-outline-primary Monthly Status  
     if typeof users != 'undefined'
     p User list
     ul.list-group

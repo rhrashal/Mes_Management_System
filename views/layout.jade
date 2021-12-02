@@ -10,7 +10,8 @@ html
     main
       h1= title 
         a(href="/").btn.btn-outline-primary Home
-        if authorised          
+        if authorised  
+          a(href='/change-password').btn.btn-outline-warning Change Password        
           a(href="/exit").btn.btn-outline-danger Log Out
       if typeof messages != 'undefined'
         each msg in messages
