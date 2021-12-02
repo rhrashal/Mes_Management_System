@@ -7,6 +7,11 @@ block content
       a(href="/user-process").btn.btn-outline-primary User Process
       a(href="/user-process-clear").btn.btn-outline-primary User Process Clear
       a(href='/register').btn.btn-outline-warning Register
+    
+      form(method="POST" action="meal-status")
+        input#dateInfo(type='date', name='dateInfo')
+        button(type="submit").btn.btn-outline-primary Daly Status
+
     if typeof users != 'undefined'
     p User list
     ul.list-group
@@ -16,6 +21,9 @@ block content
     h2 
       span.btn.btn-success #{fname} 
       a(href="/user-status",).btn.btn-outline-primary User Status
+      form(method="POST" action="meal-status")
+        input#dateInfo(type='date', name='dateInfo')
+        button(type="submit").btn.btn-outline-primary Daly Status
     if typeof users != 'undefined'
     p User list
     ul.list-group

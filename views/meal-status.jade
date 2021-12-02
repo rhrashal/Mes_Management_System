@@ -20,22 +20,24 @@ block content
         thead
             tr  
                 th Date_Name 
+                th Member Name
                 th Breakfast 
                 th Lauch 
                 th Dinner
-                th Action
+                if authorised && fname=="Admin"
+                  th Action
         tbody
             for meal in meals
                 tr                
                     td=moment(meal.meal_date ).format("DD/MM/YYYY")
+                    td=meal.user_fname
                     td=meal.breakfast
                     td=meal.launch
                     td=meal.dinner
-                    td
-                      if meal.meal_date>new Date()
+                    if authorised && fname=="Admin"
+                      td
                         a(href="/edit-meal/"+meal.meal_id).btn.btn-outline-warning.btn-sm Edit
-                      else 
-                        span.badge.badge-pill.badge-warning Not Editable
+
   else
     //- p Don't have an account yet? 
     //-   a(href='/register') Register
