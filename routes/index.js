@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db');
+var errors = [];
 
 router.get('/', function (req, res, next) {
 
-  var sqlQuery = `SELECT * FROM users`;
+  var sqlQuery = `SELECT * FROM users where user_fname<>'Admin' order by user_fname `;
 
   db.query(sqlQuery, function (err, results, fields) {
 
@@ -187,5 +188,71 @@ router.post('/monthly-Status', function (req, res, next) {
   }
 });
 
+router.get('/add-meal', function (req, res, next) {  
+  res.render('add-meal', {
+    title: 'Add meal - ',
+    authorised: req.session.authorised,
+    fname: req.session.fname,
+    user_id: req.session.user_id,
+  });
+});
+
+router.post('/add-meal', function (req, res, next) {  
+  var breakfast = checkNagative(req.body.breakfast);
+  var lunch = checkNagative(req.body.lunch);
+  var dinner = checkNagative(req.body.dinner);
+
+
+  var sqlQuery = `select count(meal_id) dt from meal m where m.users_id = ? and meal_date = cast(? as date)`;
+    var values = [req.session.user_id, req.body.dateInfo];
+    console.warn(values);
+    db.query(sqlQuery, values, function (err, results, fields) {
+       console.warn(results);        
+      if (results[0].dt == 0) {
+        var sqlQueryinsert = `insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by,add_date,isdelete) 
+                              values (null,?,?,?,?,?,?,?,0)  `;
+        var values1 = [req.session.user_id, req.body.dateInfo,breakfast,lunch,dinner,req.session.fname, new Date()];
+        db.query(sqlQueryinsert, values1, function (err, results1, fields) {
+          console.warn(results1.affectedRows);        
+          if (results.affectedRows > 0) {
+            errors.push(results.affectedRows+" Rows Inserted.");
+            next();
+          } else {
+            errors.push(err.message);
+            next();
+          }     
+        });
+      }else{
+        errors.push("Meal Already Exist");
+        next();
+      }
+    });
+    next();
+});
+
+
+router.post('/add-meal', function (req, res, next) {
+  res.statusCode = 401;
+  res.setHeader("Content-Type", "text/html");
+  res.render('add-meal', {
+    title: 'add-meal ',
+    messages: errors
+  });
+  errors = [];
+});
+
 module.exports = router;
 
+
+
+
+
+
+
+function checkNagative(num){
+  if(num<0){
+    return 0;
+  }else{
+    return num;
+  }
+}

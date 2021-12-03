@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  if authorised
+    h2 
+      span.btn.btn-success #{fname}       
+    form(method='POST')
+        div.row.justify-content-center         
+            label(for='dateInfo').col-md-4
+                b Meal Date
+            div.col-md-8
+                input#dateInfo(type='date', name='dateInfo', required='required').form-control
+            label(for='breakfast').col-md-4
+                b Breakfast
+            div.col-md-8
+                input#breakfast(type='number', name='breakfast', required='required').form-control
+            label(for='lunch').col-md-4
+                b Lunch
+            div.col-md-8
+                input#lunch(type='number', name='lunch', required='required').form-control
+            label(for='dinner').col-md-4
+                b Dinner
+            div.col-md-8
+                input#dinner(type='number', name='dinner', required='required').form-control
+            br 
+            br
+            button(type='submit') Add Meal
+  else
+    //- p Don't have an account yet? 
+    //-   a(href='/register') Register
+    p Already have an account? 
+      a(href='/login') Login
