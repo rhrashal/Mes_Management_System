@@ -9,8 +9,8 @@ The application allows users to register, login and access to the user's private
 Make sure you have [Node.js](http://nodejs.org/) and [MySQL](http://www.mysql.com/) installed.
 
 ```sh
-git clone https://github.com/yusufsefasezer/nodejs-register-login.git
-cd nodejs-register-login
+git clone https://github.com/rhrashal/Mes_Management_System.git
+cd Mes_Management_System
 npm install
 ```
 
