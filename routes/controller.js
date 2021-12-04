@@ -3,6 +3,7 @@ var router = express.Router();
 var db = require('../db');
 var errors = [];
 
+
 router.get('/user-process', function (req, res, next) {
 
 
@@ -31,6 +32,10 @@ router.get('/user-process', function (req, res, next) {
 
 });
 router.post('/user-process', function (req, res, next) {
+  var breakfast = checkNagative(req.body.breakfast);
+  var lunch = checkNagative(req.body.lunch);
+  var dinner = checkNagative(req.body.dinner);
+
   var month = req.body.month.split("-");
   var dat = getDaysInMonthUTC(month[1] - 1, month[0])
   //console.warn(dat);
@@ -44,7 +49,7 @@ router.post('/user-process', function (req, res, next) {
       if (results[0].dt == 0) {
         var sqlQueryinsert = `insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by,add_date,isdelete) 
                               values (null,?,?,?,?,?,?,?,0)  `;
-        var values1 = [req.body.user_id, item, req.body.breakfast, req.body.lunch, req.body.dinner, req.session.fname, new Date()];
+        var values1 = [req.body.user_id, item, breakfast,lunch,dinner, req.session.fname, new Date()];
         db.query(sqlQueryinsert, values1, function (err, results1, fields) {
           //console.warn(results1.affectedRows);        
           if (results1.affectedRows == 1) {
@@ -67,7 +72,6 @@ router.post('/user-process', function (req, res, next) {
   res.redirect('/user-process');
   return; 
 });
-
 router.post('/user-process', function (req, res, next) {
   res.statusCode = 401;
   res.render('user-process', {
@@ -77,9 +81,8 @@ router.post('/user-process', function (req, res, next) {
   errors = [];
 });
 
+
 router.get('/user-process-clear', function (req, res, next) {
-
-
   if (req.session.authorised) {
     var sqlQuery = `select user_id,user_email,user_fname from users u  where user_fname <> 'Admin'`;
 
@@ -125,7 +128,6 @@ router.post('/user-process-clear', function (req, res, next) {
  // res.redirect('/user-process-clear');
   return;
 });
-
 router.post('/user-process-clear', function (req, res, next) {
   res.statusCode = 401;
   res.render('user-process-clear', {
