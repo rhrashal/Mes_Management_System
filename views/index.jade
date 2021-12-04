@@ -26,10 +26,19 @@ block content
           div.col-md-4 
             button(type="submit").btn.btn-outline-primary Monthly Status     
     if typeof users != 'undefined'
-    p User list
-    ul.list-group
-      each user in users
-        li.list-group-item.list-group-item-action.list-group-item-primary= user.user_fname    
+    p User list   
+    table.table.table-hover.table-dark
+        thead
+            tr  
+                th Name
+                th Email 
+                th Phone                 
+        tbody
+            for user in users
+                tr                
+                    td=user.user_fname
+                    td=user.user_email
+                    td=user.user_phone
   else if authorised
     h2 
       span.btn.btn-success #{fname} 
@@ -53,11 +62,25 @@ block content
             button(type="submit").btn.btn-outline-primary Monthly Status  
     if typeof users != 'undefined'
     p User list
-    ul.list-group
-      each user in users
-        li.list-group-item.list-group-item-action.list-group-item-primary= user.user_fname
+    table.table.table-hover.table-dark
+        thead
+            tr  
+                th Name
+                th Email 
+                th Phone                 
+        tbody
+            for user in users
+                tr                
+                    td=user.user_fname
+                    td=user.user_email
+                    td=user.user_phone
   else
     //- p Don't have an account yet? 
     //-   a(href='/register') Register
     p.alert.alert-warning You don't have an account, contact with Admin 
     a(href='/login').btn.btn-outline-info Login
+
+
+     //- ul.list-group
+    //-   each user in users
+    //-     li.list-group-item.list-group-item-action.list-group-item-primary #{user.user_fname}-#{user.user_email}-#{user.user_phone}
