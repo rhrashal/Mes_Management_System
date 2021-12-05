@@ -32,13 +32,16 @@ block content
             tr  
                 th Name
                 th Email 
-                th Phone                 
+                th Phone
+                th Total Meal                 
         tbody
             for user in users
                 tr                
-                    td=user.user_fname
+                    td
+                      a(href="/member-info/"+user.user_id).btn.btn-outline-info.btn-sm=user.user_fname
                     td=user.user_email
                     td=user.user_phone
+                    td=user.total_meal
   else if authorised
     h2 
       span.btn.btn-success #{fname} 
@@ -67,13 +70,16 @@ block content
             tr  
                 th Name
                 th Email 
-                th Phone                 
+                th Phone 
+                th Total Meal                 
         tbody
             for user in users
                 tr                
-                    td=user.user_fname
+                    td
+                      a(href="/member-info/"+user.user_id).btn.btn-outline-info.btn-sm=user.user_fname
                     td=user.user_email
                     td=user.user_phone
+                    td=user.total_meal
   else
     //- p Don't have an account yet? 
     //-   a(href='/register') Register

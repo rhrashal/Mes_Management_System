@@ -69,3 +69,17 @@ set @DateFilter := '2021-11-25';
 	,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.meal_date =  @DateFilter )  as totalMeal 
 	from meal m inner join users u on u.user_id  = m.users_id 
 	where m.meal_date =  @DateFilter
+
+
+
+
+
+	
+
+SELECT u.user_id,u.user_email,u.user_fname,u.user_phone
+,(select (sum(m2.breakfast)+sum(m2.launch)+sum(m2.dinner))  from meal m2 where m2.users_id =u.user_id and  month(m2.meal_date) = month(curdate()) and  year(m2.meal_date) = year(curdate())  and m2.meal_date<=curdate() ) as total_meal 
+FROM users u where u.user_fname<>'Admin' order by u.user_fname
+                 
+-- --u.user_fname<>'Admin' order by u.user_fname
+
+select * from users u m where  month (m.meal_date) = month(curdate())  and m.meal_date<=curdate()

@@ -137,6 +137,53 @@ router.post('/user-process-clear', function (req, res, next) {
   errors = [];
 });
 
+router.get('/member-info/:member_id', function (req, res, next) {  
+  var sqlQuery = ` select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner,u.user_fname
+                        ,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  ? and month(m1.meal_date) =  month(curdate()) and year(m1.meal_date) =  year(curdate())  and meal_date <= CURDATE() ) as totalBreakfast
+                        ,(select sum(m2.launch) from meal m2 where m2.users_id =  ? and month(m2.meal_date) =  month(curdate()) and year(m2.meal_date) =   year(curdate())  and meal_date <= CURDATE()) as totalLaunch
+                        ,(select sum(m3.dinner) from meal m3 where m3.users_id =  ? and month(m3.meal_date) =  month(curdate()) and year(m3.meal_date) =   year(curdate())   and meal_date <= CURDATE())  as totalDinner 
+                        ,(select (sum(m4.breakfast)/2)+sum(m4.launch)+sum(m4.dinner) from meal m4 where m4.users_id =  ? and month(m4.meal_date) =  month(curdate()) and year(m4.meal_date) =  year(curdate())  and meal_date <= CURDATE())  as totalMeal 
+                        from meal m inner join users u on u.user_id  = m.users_id
+                        where m.users_id =  ? and month(m.meal_date) =  month(curdate()) and year(m.meal_date) =   year(curdate())  ORDER BY m.meal_date 
+  `;
+  var value = [req.params.member_id,req.params.member_id,req.params.member_id,req.params.member_id,req.params.member_id]
+  db.query(sqlQuery,value, function (err, results, fields) {
+    //console.log(results);
+    res.render('member-info/:member_id', {
+      title: 'member-info - ',
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id,
+      meal: results[0]
+    });
+  });
+});
+// router.post('/edit-meal/:meal_Id', function (req, res, next) {  
+//   var breakfast = checkNagative(req.body.breakfast);
+//   var lunch = checkNagative(req.body.lunch);
+//   var dinner = checkNagative(req.body.dinner);
+
+//   var sqlQuery = ` update meal set breakfast = ? , launch = ? , dinner = ?, update_by = ?, update_date  = ?  where  meal_id = ?  `;
+//   var value = [breakfast,lunch,dinner,req.session.fname, new Date(),req.body.meal_id]
+//   db.query(sqlQuery,value, function (err, results, fields) {
+//     //console.log(results);
+//     if (results.affectedRows == 1) {
+//       res.redirect('/user-status');
+//       return;
+//     } else {
+//       errors.push(err.message);
+//       next();
+//     }    
+//   });
+// });
+// router.post('/edit-meal', function (req, res, next) {
+//   res.statusCode = 401;
+//   res.render('edit-meal', {
+//     title: 'edit-meal ',
+//     messages: errors
+//   });
+//   errors = [];
+// });
 
 module.exports = router;
 
