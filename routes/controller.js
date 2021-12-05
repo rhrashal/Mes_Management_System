@@ -138,6 +138,7 @@ router.post('/user-process-clear', function (req, res, next) {
 });
 
 router.get('/member-info/:member_id', function (req, res, next) {  
+
   var sqlQuery = ` select m.meal_id,m.meal_date,m.breakfast,m.launch,m.dinner,u.user_fname
                         ,(select sum(m1.breakfast)/2 from meal m1 where m1.users_id =  ? and month(m1.meal_date) =  month(curdate()) and year(m1.meal_date) =  year(curdate())  and meal_date <= CURDATE() ) as totalBreakfast
                         ,(select sum(m2.launch) from meal m2 where m2.users_id =  ? and month(m2.meal_date) =  month(curdate()) and year(m2.meal_date) =   year(curdate())  and meal_date <= CURDATE()) as totalLaunch
@@ -148,13 +149,13 @@ router.get('/member-info/:member_id', function (req, res, next) {
   `;
   var value = [req.params.member_id,req.params.member_id,req.params.member_id,req.params.member_id,req.params.member_id]
   db.query(sqlQuery,value, function (err, results, fields) {
-    //console.log(results);
-    res.render('member-info/:member_id', {
+    console.log(results);
+    res.render('member-info', {
       title: 'member-info - ',
       authorised: req.session.authorised,
       fname: req.session.fname,
       user_id: req.session.user_id,
-      meal: results[0]
+      meals: results
     });
   });
 });

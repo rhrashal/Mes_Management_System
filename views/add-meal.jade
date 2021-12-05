@@ -3,7 +3,7 @@ extends layout
 block content
   if authorised
     h2 
-      span.btn.btn-success #{fname}       
+      a(href="/user-status",).btn.btn-info #{fname} 
     form(method='POST')
         div.row.justify-content-center         
             //- label(for='dateInfo').col-md-1

@@ -39,13 +39,17 @@ block content
                 tr                
                     td
                       a(href="/member-info/"+user.user_id).btn.btn-outline-info.btn-sm=user.user_fname
-                    td=user.user_email
-                    td=user.user_phone
-                    td=user.total_meal
+                    td
+                      a(href="mailto:#{user.user_email}").btn.btn-outline-success.btn-sm=user.user_email
+                    td
+                      a(href="tel:#{user.user_phone}").btn.btn-outline-primary.btn-sm=user.user_phone
+                    td
+                      a(href="#").btn.btn-outline-warning.btn-sm=user.total_meal
   else if authorised
     h2 
-      span.btn.btn-success #{fname} 
-      a(href="/user-status",).btn.btn-outline-primary User Status      
+      a(href="/user-status",).btn.btn-info #{fname} 
+      //- span.btn.btn-success #{fname} 
+      //- a(href="/user-status",).btn.btn-outline-primary User Status      
       form(method="POST" action="daly-status")
         div.row.mt-3                    
           div.col-md-6 
@@ -77,9 +81,12 @@ block content
                 tr                
                     td
                       a(href="/member-info/"+user.user_id).btn.btn-outline-info.btn-sm=user.user_fname
-                    td=user.user_email
-                    td=user.user_phone
-                    td=user.total_meal
+                    td
+                      a(href="mailto:#{user.user_email}").btn.btn-outline-success.btn-sm=user.user_email
+                    td
+                      a(href="tel:#{user.user_phone}").btn.btn-outline-primary.btn-sm=user.user_phone
+                    td
+                      a(href="#").btn.btn-outline-warning.btn-sm=user.total_meal
   else
     //- p Don't have an account yet? 
     //-   a(href='/register') Register

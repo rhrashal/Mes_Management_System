@@ -2,8 +2,8 @@ extends layout
 
 block content
   if authorised
-     h2 
-      span.btn.btn-success #{fname} 
+    h2 
+       a(href="/user-status",).btn.btn-info #{fname}    
     if meals.length>0
       div.row
         button(type="button").btn.btn-info.col-3 Total Breakfast:
