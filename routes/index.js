@@ -3,27 +3,21 @@ var router = express.Router();
 var db = require('../db');
 var errors = [];
 
-var LocalStorage = require('node-localstorage').LocalStorage;
-   localStorage = new LocalStorage('./scratch');
-
 router.get('/', function (req, res, next) {
 
   //var sqlQuery = `SELECT * FROM users where user_fname<>'Admin' order by user_fname `;
   var sqlQuery = ` SELECT u.user_id,u.user_email,u.user_fname,u.user_phone
                   ,(select (sum(m2.breakfast/2)+sum(m2.launch)+sum(m2.dinner))  from meal m2 where m2.users_id =u.user_id and  month(m2.meal_date) = month(curdate()) and  year(m2.meal_date) = year(curdate())  and m2.meal_date<=curdate() ) as total_meal 
                   ,(select (sum(m2.breakfast/2)+sum(m2.launch)+sum(m2.dinner))  from meal m2 where  month(m2.meal_date) = month(curdate()) and  year(m2.meal_date) = year(curdate())  and m2.meal_date<=curdate() ) as total_all_meal 
-                  FROM users u where u.user_fname<>'Admin' and u.user_userid = 0 order by u.user_fname  `;
+                  FROM users u where u.user_fname<>'Admin' and u.user_userid = 0 order by u.user_fname   `;
 
   db.query(sqlQuery, function (err, results, fields) {
-    //console.warn('Local Stores test',localStorage.getItem('fname'));
+
     res.render('index', {
       title: "Mes Management System- ",
-      authorised: localStorage.getItem('authorised'),
-      fname: localStorage.getItem('fname'),
-      user_id: localStorage.getItem('user_id'),
-      // authorised: req.session.authorised,
-      // fname: req.session.fname,
-      // user_id: req.session.user_id,
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id,
       users: results
     });
 
@@ -33,11 +27,11 @@ router.get('/', function (req, res, next) {
 
 router.get('/user-status', function (req, res, next) {
 
-  if (localStorage.getItem('authorised')==='true') {
+  if (req.session.authorised) {
     
     var sqlQuery = ` set @userID := ?, @monthId := ? , @yearId := ? ;  `;
     const d = new Date();
-    var values = [localStorage.getItem('user_id'), d.getMonth() + 1, d.getFullYear()];
+    var values = [req.session.user_id, d.getMonth() + 1, d.getFullYear()];
     db.query(sqlQuery, values, function (err, results, fields) {
       //console.warn(results.serverStatus);
       if(results.serverStatus==2){
@@ -51,12 +45,9 @@ router.get('/user-status', function (req, res, next) {
           //console.warn(results1);
           res.render('user-status', {
             title: 'User Meal Status - ',
-            authorised: localStorage.getItem('authorised'),
-            fname: localStorage.getItem('fname'),
-            user_id: localStorage.getItem('user_id'),
-            // authorised: req.session.authorised,
-            // fname: req.session.fname,
-            // user_id: req.session.user_id,
+            authorised: req.session.authorised,
+            fname: req.session.fname,
+            user_id: req.session.user_id,
             meals: results1
           });
         });
@@ -66,8 +57,9 @@ router.get('/user-status', function (req, res, next) {
   } else {
     res.render('index', {
       title: 'Unauthorized',
-      authorised: false,
-      fname: "Anonymous User"
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id
     });
   }
 
@@ -81,13 +73,10 @@ router.get('/edit-meal/:meal_Id', function (req, res, next) {
   db.query(sqlQuery,value, function (err, results, fields) {
     //console.log(results);
     res.render('edit-meal', {
-      title: 'Meal Edit - ',      
-      authorised: localStorage.getItem('authorised'),
-      fname: localStorage.getItem('fname'),
-      user_id: localStorage.getItem('user_id'),
-      // authorised: req.session.authorised,
-      // fname: req.session.fname,
-      // user_id: req.session.user_id,
+      title: 'Meal Edit - ',
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id,
       meal: results[0]
     });
   });
@@ -98,7 +87,7 @@ router.post('/edit-meal/:meal_Id', function (req, res, next) {
   var dinner = checkNagative(req.body.dinner);
 
   var sqlQuery = ` update meal set breakfast = ? , launch = ? , dinner = ?, update_by = ?, update_date  = ?  where  meal_id = ?  `;
-  var value = [breakfast,lunch,dinner,localStorage.getItem('fname'), new Date(),req.body.meal_id]
+  var value = [breakfast,lunch,dinner,req.session.fname, new Date(),req.body.meal_id]
   db.query(sqlQuery,value, function (err, results, fields) {
     //console.log(results);
     if (results.affectedRows == 1) {
@@ -122,7 +111,7 @@ router.post('/edit-meal', function (req, res, next) {
 
 router.post('/daly-status', function (req, res, next) {
   //console.log(req.body.dateInfo)
-  if (localStorage.getItem('authorised')==='true') {    
+  if (req.session.authorised) {    
     var sqlQuery = ` set @DateFilter := ? ;   `;
     var values = [];
     var d = new Date();
@@ -145,13 +134,10 @@ router.post('/daly-status', function (req, res, next) {
         db.query(sqlQuery1, function (err, results1, fields) {
           //console.warn(results1);
           res.render('daly-status', {
-            title: 'User Meal Status - ',            
-            authorised: localStorage.getItem('authorised'),
-            fname: localStorage.getItem('fname'),
-            user_id: localStorage.getItem('user_id'),
-            // authorised: req.session.authorised,
-            // fname: req.session.fname,
-            // user_id: req.session.user_id,
+            title: 'User Meal Status - ',
+            authorised: req.session.authorised,
+            fname: req.session.fname,
+            user_id: req.session.user_id,
             meals: results1
           });
         });
@@ -161,8 +147,9 @@ router.post('/daly-status', function (req, res, next) {
   } else {
     res.render('index', {
       title: 'Unauthorized',
-      authorised: false,
-      fname: "Anonymous User"
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id
     });
   }
 
@@ -172,7 +159,7 @@ router.post('/monthly-Status', function (req, res, next) {
 
   console.log(req.body)
 
-  if (localStorage.getItem('authorised')==='true') {
+  if (req.session.authorised) {
     
     var sqlQuery = ` set @userID := ?, @monthId := ? , @yearId := ? ;   `;
     const d = new Date();
@@ -196,13 +183,10 @@ router.post('/monthly-Status', function (req, res, next) {
         db.query(sqlQuery1, function (err, results1, fields) {
           //console.warn(results1);
           res.render('monthly-status', {
-            title: 'User Meal Status - ',            
-            authorised: localStorage.getItem('authorised'),
-            fname: localStorage.getItem('fname'),
-            user_id: localStorage.getItem('user_id'),
-            // authorised: req.session.authorised,
-            // fname: req.session.fname,
-            // user_id: req.session.user_id,
+            title: 'User Meal Status - ',
+            authorised: req.session.authorised,
+            fname: req.session.fname,
+            user_id: req.session.user_id,
             meals: results1
           });
         });
@@ -212,8 +196,9 @@ router.post('/monthly-Status', function (req, res, next) {
   } else {
     res.render('index', {
       title: 'Unauthorized',
-      authorised: false,
-      fname: "Anonymous User"
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id
     });
   }
 });
@@ -221,13 +206,10 @@ router.post('/monthly-Status', function (req, res, next) {
 
 router.get('/add-meal', function (req, res, next) {  
   res.render('add-meal', {
-    title: 'Add meal - ',    
-    authorised: localStorage.getItem('authorised'),
-    fname: localStorage.getItem('fname'),
-    user_id: localStorage.getItem('user_id'),
-    // authorised: req.session.authorised,
-    // fname: req.session.fname,
-    // user_id: req.session.user_id,
+    title: 'Add meal - ',
+    authorised: req.session.authorised,
+    fname: req.session.fname,
+    user_id: req.session.user_id,
   });
 });
 router.post('/add-meal', function (req, res, next) {  
@@ -237,14 +219,14 @@ router.post('/add-meal', function (req, res, next) {
 
 
   var sqlQuery = `select count(meal_id) dt from meal m where m.users_id = ? and meal_date = cast(? as date)`;
-    var values = [localStorage.getItem('user_id'), req.body.dateInfo];
+    var values = [req.session.user_id, req.body.dateInfo];
     //console.warn(values);
     db.query(sqlQuery, values, function (err, results, fields) {
        //console.warn(results);        
       if (results[0].dt == 0) {
         var sqlQueryinsert = `insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by,add_date,isdelete) 
                               values (null,?,?,?,?,?,?,?,0)  `;
-        var values1 = [localStorage.getItem('user_id'), req.body.dateInfo,breakfast,lunch,dinner,localStorage.getItem('fname'), new Date()];
+        var values1 = [req.session.user_id, req.body.dateInfo,breakfast,lunch,dinner,req.session.fname, new Date()];
         db.query(sqlQueryinsert, values1, function (err, results1, fields) {
           console.warn(results1);        
           if(results1.affectedRows == 1){

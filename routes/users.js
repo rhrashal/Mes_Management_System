@@ -4,9 +4,6 @@ var db = require('../db');
 var helpers = require('../helpers');
 var errors = [];
 
-var LocalStorage = require('node-localstorage').LocalStorage;
-   localStorage = new LocalStorage('./scratch');
-
 //router.get('/register', helpers.loginChecker, function (req, res, next) {
 router.get('/register', function (req, res, next) {
 
@@ -96,7 +93,7 @@ router.post('/login', function (req, res, next) {
     return;
   }
 
-  var sqlQuery = `SELECT * FROM users WHERE user_email = ? AND user_pass = MD5(?)`;
+  var sqlQuery = `SELECT * FROM users WHERE user_email = ? AND user_pass = MD5(?) and user_userid = 0`;
   var values = [req.body.email, req.body.psw];
 
   db.query(sqlQuery, values, function (err, results, fields) {
@@ -108,13 +105,9 @@ router.post('/login', function (req, res, next) {
     }
 
     if (results.length == 1) {
-      localStorage.setItem('fname',results[0].user_fname);
-      localStorage.setItem('authorised',true);
-      localStorage.setItem('user_id',results[0].user_id);
-      // req.session.authorised = true;
-      // req.session.fname = results[0].user_fname;
-      // req.session.user_id = results[0].user_id;
-      //console.warn('Local Stores test',localStorage.getItem('fname'));
+      req.session.authorised = true;
+      req.session.fname = results[0].user_fname;
+      req.session.user_id = results[0].user_id;
       res.redirect('/');
       return;
     } else {
@@ -140,42 +133,36 @@ router.post('/login', function (req, res, next) {
 });
 
 router.get('/exit', function (req, res, next) {
-  localStorage.clear();
-  res.redirect('/');
-  // req.session.destroy(function (err) {
-  //   localStorage.clear();
-  //   res.redirect('/');
-  // });
+
+  req.session.destroy(function (err) {
+    res.redirect('/');
+  });
 
 });
 
 router.get('/change-password', function (req, res, next) {
-  if (localStorage.getItem('authorised')==='true') {
+  if (req.session.authorised) {
     res.render('change-password', {
-      title: localStorage.getItem('fname')+"'s Password Change ",
-      authorised: localStorage.getItem('authorised'),
-      fname: localStorage.getItem('fname'),
-      user_id: localStorage.getItem('user_id'),
+      title: req.session.fname+"'s Password Change ",
+      authorised: req.session.authorised,
+      fname: req.session.fname,
+      user_id: req.session.user_id,
     });
   }
 });
 router.post('/change-password', function (req, res, next) {
 
-  var sqlQuery = `SELECT * FROM users where user_id = ? and user_pass  =  MD5( ? ) and user_userid = 0 ;`;
+  var sqlQuery = `SELECT * FROM users where user_id = ? and user_pass  =  MD5( ? );`;
   var values = [req.body.user_id, req.body.currPass];
 
   db.query(sqlQuery, values, function (err, results, fields) {
     console.log(results);
     if (results.length == 1) {
       res.render('change-password', {
-        title: localStorage.getItem('fname')+"'s Password Change ",
-        authorised: localStorage.getItem('authorised'),
-        fname: localStorage.getItem('fname'),
-        user_id: localStorage.getItem('user_id'),
-        // title: req.session.fname+"'s Password Change ",
-        // authorised: req.session.authorised,
-        // fname: req.session.fname,
-        // user_id: req.session.user_id,
+        title: req.session.fname+"'s Password Change ",
+        authorised: req.session.authorised,
+        fname: req.session.fname,
+        user_id: req.session.user_id,
         user:results
       });
       return;
