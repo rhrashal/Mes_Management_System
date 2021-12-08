@@ -26,7 +26,8 @@ block content
           div.col-md-4 
             button(type="submit").btn.btn-outline-primary Monthly Status     
     if typeof users != 'undefined'
-    p User list   
+    p 
+      b Total Meal of this Month : #{users[0].total_all_meal}       
     table.table.table-hover.table-dark
         thead
             tr  
@@ -68,7 +69,8 @@ block content
           div.col-md-4 
             button(type="submit").btn.btn-outline-primary Monthly Status  
     if typeof users != 'undefined'
-    p User list
+    p 
+      b Total Meal of this Month : #{users[0].total_all_meal}   
     table.table.table-hover.table-dark
         thead
             tr  

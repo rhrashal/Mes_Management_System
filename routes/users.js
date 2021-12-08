@@ -161,7 +161,7 @@ router.get('/change-password', function (req, res, next) {
 });
 router.post('/change-password', function (req, res, next) {
 
-  var sqlQuery = `SELECT * FROM users where user_id = ? and user_pass  =  MD5( ? );`;
+  var sqlQuery = `SELECT * FROM users where user_id = ? and user_pass  =  MD5( ? ) and user_userid = 0 ;`;
   var values = [req.body.user_id, req.body.currPass];
 
   db.query(sqlQuery, values, function (err, results, fields) {

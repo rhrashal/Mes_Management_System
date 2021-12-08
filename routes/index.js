@@ -11,7 +11,8 @@ router.get('/', function (req, res, next) {
   //var sqlQuery = `SELECT * FROM users where user_fname<>'Admin' order by user_fname `;
   var sqlQuery = ` SELECT u.user_id,u.user_email,u.user_fname,u.user_phone
                   ,(select (sum(m2.breakfast/2)+sum(m2.launch)+sum(m2.dinner))  from meal m2 where m2.users_id =u.user_id and  month(m2.meal_date) = month(curdate()) and  year(m2.meal_date) = year(curdate())  and m2.meal_date<=curdate() ) as total_meal 
-                  FROM users u where u.user_fname<>'Admin' order by u.user_fname  `;
+                  ,(select (sum(m2.breakfast/2)+sum(m2.launch)+sum(m2.dinner))  from meal m2 where  month(m2.meal_date) = month(curdate()) and  year(m2.meal_date) = year(curdate())  and m2.meal_date<=curdate() ) as total_all_meal 
+                  FROM users u where u.user_fname<>'Admin' and u.user_userid = 0 order by u.user_fname  `;
 
   db.query(sqlQuery, function (err, results, fields) {
     //console.warn('Local Stores test',localStorage.getItem('fname'));
