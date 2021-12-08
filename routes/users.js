@@ -4,6 +4,9 @@ var db = require('../db');
 var helpers = require('../helpers');
 var errors = [];
 
+var LocalStorage = require('node-localstorage').LocalStorage;
+   localStorage = new LocalStorage('./scratch');
+
 //router.get('/register', helpers.loginChecker, function (req, res, next) {
 router.get('/register', function (req, res, next) {
 
@@ -105,9 +108,13 @@ router.post('/login', function (req, res, next) {
     }
 
     if (results.length == 1) {
-      req.session.authorised = true;
-      req.session.fname = results[0].user_fname;
-      req.session.user_id = results[0].user_id;
+      localStorage.setItem('fname',results[0].user_fname);
+      localStorage.setItem('authorised',true);
+      localStorage.setItem('user_id',results[0].user_id);
+      // req.session.authorised = true;
+      // req.session.fname = results[0].user_fname;
+      // req.session.user_id = results[0].user_id;
+      //console.warn('Local Stores test',localStorage.getItem('fname'));
       res.redirect('/');
       return;
     } else {
@@ -133,20 +140,22 @@ router.post('/login', function (req, res, next) {
 });
 
 router.get('/exit', function (req, res, next) {
-
-  req.session.destroy(function (err) {
-    res.redirect('/');
-  });
+  localStorage.clear();
+  res.redirect('/');
+  // req.session.destroy(function (err) {
+  //   localStorage.clear();
+  //   res.redirect('/');
+  // });
 
 });
 
 router.get('/change-password', function (req, res, next) {
-  if (req.session.authorised) {
+  if (localStorage.getItem('authorised')==='true') {
     res.render('change-password', {
-      title: req.session.fname+"'s Password Change ",
-      authorised: req.session.authorised,
-      fname: req.session.fname,
-      user_id: req.session.user_id,
+      title: localStorage.getItem('fname')+"'s Password Change ",
+      authorised: localStorage.getItem('authorised'),
+      fname: localStorage.getItem('fname'),
+      user_id: localStorage.getItem('user_id'),
     });
   }
 });
@@ -159,10 +168,14 @@ router.post('/change-password', function (req, res, next) {
     console.log(results);
     if (results.length == 1) {
       res.render('change-password', {
-        title: req.session.fname+"'s Password Change ",
-        authorised: req.session.authorised,
-        fname: req.session.fname,
-        user_id: req.session.user_id,
+        title: localStorage.getItem('fname')+"'s Password Change ",
+        authorised: localStorage.getItem('authorised'),
+        fname: localStorage.getItem('fname'),
+        user_id: localStorage.getItem('user_id'),
+        // title: req.session.fname+"'s Password Change ",
+        // authorised: req.session.authorised,
+        // fname: req.session.fname,
+        // user_id: req.session.user_id,
         user:results
       });
       return;

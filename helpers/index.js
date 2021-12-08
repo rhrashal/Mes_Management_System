@@ -4,7 +4,7 @@ function validateEmail(email) {
 }
 
 function loginChecker(req, res, next) {
-  if (req.session.authorised) {
+  if (localStorage.getItem('authorised')===true) {
     res.redirect('/');
     return;
   } else {

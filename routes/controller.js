@@ -2,30 +2,33 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db');
 var errors = [];
-
+var LocalStorage = require('node-localstorage').LocalStorage;
+   localStorage = new LocalStorage('./scratch');
 
 router.get('/user-process', function (req, res, next) {
 
 
-  if (req.session.authorised) {
+  if (localStorage.getItem('authorised')==='true') {
     var sqlQuery = `select user_id,user_email,user_fname from users u  where user_fname <> 'Admin'`;
 
     db.query(sqlQuery, function (err, results, fields) {
       //console.warn(results);
       res.render('user-process', {
-        title: 'User Meal Process',
-        authorised: req.session.authorised,
-        fname: req.session.fname,
-        user_id: req.session.user_id,
+        title: 'User Meal Process',        
+        authorised: localStorage.getItem('authorised'),
+        fname: localStorage.getItem('fname'),
+        user_id: localStorage.getItem('user_id'),
+        // authorised: req.session.authorised,
+        // fname: req.session.fname,
+        // user_id: req.session.user_id,
         users: results
       });
     });
   } else {
     res.render('index', {
       title: 'Unauthorized',
-      authorised: req.session.authorised,
-      fname: req.session.fname,
-      user_id: req.session.user_id
+      authorised: false,
+      fname: "Anonymous User"
     });
   }
 
@@ -49,7 +52,7 @@ router.post('/user-process', function (req, res, next) {
       if (results[0].dt == 0) {
         var sqlQueryinsert = `insert into meal(meal_id,users_id,meal_date,breakfast,launch,dinner,add_by,add_date,isdelete) 
                               values (null,?,?,?,?,?,?,?,0)  `;
-        var values1 = [req.body.user_id, item, breakfast,lunch,dinner, req.session.fname, new Date()];
+        var values1 = [req.body.user_id, item, breakfast,lunch,dinner, localStorage.getItem('fname'), new Date()];
         db.query(sqlQueryinsert, values1, function (err, results1, fields) {
           //console.warn(results1.affectedRows);        
           if (results1.affectedRows == 1) {
@@ -83,25 +86,27 @@ router.post('/user-process', function (req, res, next) {
 
 
 router.get('/user-process-clear', function (req, res, next) {
-  if (req.session.authorised) {
+  if (localStorage.getItem('authorised')==='true') {
     var sqlQuery = `select user_id,user_email,user_fname from users u  where user_fname <> 'Admin'`;
 
     db.query(sqlQuery, function (err, results, fields) {
       //console.warn(results);
       res.render('user-process-clear', {
-        title: 'User Meal Process',
-        authorised: req.session.authorised,
-        fname: req.session.fname,
-        user_id: req.session.user_id,
+        title: 'User Meal Process',        
+        authorised: localStorage.getItem('authorised'),
+        fname: localStorage.getItem('fname'),
+        user_id: localStorage.getItem('user_id'),
+        // authorised: req.session.authorised,
+        // fname: req.session.fname,
+        // user_id: req.session.user_id,        
         users: results
       });
     });
   } else {
     res.render('index', {
       title: 'Unauthorized',
-      authorised: req.session.authorised,
-      fname: req.session.fname,
-      user_id: req.session.user_id
+      authorised: false,
+      fname: "Anonymous User"
     });
   }
 
@@ -152,39 +157,16 @@ router.get('/member-info/:member_id', function (req, res, next) {
     console.log(results);
     res.render('member-info', {
       title: 'member-info - ',
-      authorised: req.session.authorised,
-      fname: req.session.fname,
-      user_id: req.session.user_id,
+      authorised: localStorage.getItem('authorised'),
+      fname: localStorage.getItem('fname'),
+      user_id: localStorage.getItem('user_id'),
+      // authorised: req.session.authorised,
+      // fname: req.session.fname,
+      // user_id: req.session.user_id,
       meals: results
     });
   });
 });
-// router.post('/edit-meal/:meal_Id', function (req, res, next) {  
-//   var breakfast = checkNagative(req.body.breakfast);
-//   var lunch = checkNagative(req.body.lunch);
-//   var dinner = checkNagative(req.body.dinner);
-
-//   var sqlQuery = ` update meal set breakfast = ? , launch = ? , dinner = ?, update_by = ?, update_date  = ?  where  meal_id = ?  `;
-//   var value = [breakfast,lunch,dinner,req.session.fname, new Date(),req.body.meal_id]
-//   db.query(sqlQuery,value, function (err, results, fields) {
-//     //console.log(results);
-//     if (results.affectedRows == 1) {
-//       res.redirect('/user-status');
-//       return;
-//     } else {
-//       errors.push(err.message);
-//       next();
-//     }    
-//   });
-// });
-// router.post('/edit-meal', function (req, res, next) {
-//   res.statusCode = 401;
-//   res.render('edit-meal', {
-//     title: 'edit-meal ',
-//     messages: errors
-//   });
-//   errors = [];
-// });
 
 module.exports = router;
 
