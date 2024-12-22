@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 	CONSTRAINT PK_user_id PRIMARY KEY(user_id),
 	CONSTRAINT UK_user_email UNIQUE(user_email)
 );
+
+
 go
 INSERT INTO users(user_id,user_email,user_pass,user_fname,user_nid,user_phone,user_phone2,user_dob) 
 VALUES(1, 'admin@mail.com', MD5('123456'), 'Admin','','','','');
